@@ -1,7 +1,7 @@
 # Individual Report: Lab 3 - Chatbot vs ReAct Agent
 
-- **Student Name**: Dương Văn Hiệp
-- **Student ID**: 2A202600052
+- **Student Name**: Nguyễn Minh Quân
+- **Student ID**: 2A202600181
 - **Date**: 2026-04-06
 
 ---
@@ -12,14 +12,14 @@
 
 | Module | File | Mô tả |
 |:---|:---|:---|
-| **LLM Provider Selection** | `src/main.py` | Hỗ trợ `--provider` CLI arg, interactive menu chọn OpenAI (GitHub Models), Gemini, Local Phi-3 |
-| **OpenAI / Github Models** | `src/core/openai_provider.py` | Tích hợp thành công `gpt-4o` qua endpoint Github Models bằng Personal Access Token |
-| **Agent v2 (Improved)** | `src/agent/agent.py` | Cải thiện system prompt, few-shot examples, parse error bailout |
-| **Gemini Provider Fix** | `src/core/gemini_provider.py` | Fix deprecated SDK warning, model migration, error handling |
-| **Local Provider Fix** | `src/core/local_provider.py` | Fix `n_ctx` memory issue gây crash context creation |
-| **Metrics Enhancement** | `src/telemetry/metrics.py` | Thêm pricing cho `gemini-2.0-flash` model |
-| **Unicode Fix** | `src/main.py` | Fix `UnicodeEncodeError` cho Vietnamese trên Windows |
-| **Test Scenarios** | `test_scenarios.py` | Script test tự động so sánh Chatbot vs Agent |
+| **LLM Provider Selection** | `src/main.py` | Thêm tùy chọn provider khi chạy và menu tương tác cho OpenAI/Gemini/Local |
+| **OpenAI / Github Models** | `src/core/openai_provider.py` | Kết nối `gpt-4o` qua GitHub Models bằng Personal Access Token |
+| **Agent v2 (Improved)** | `src/agent/agent.py` | Nâng cấp prompt hệ thống, thêm ví dụ mẫu, xử lý lỗi parse lặp lại |
+| **Gemini Provider Fix** | `src/core/gemini_provider.py` | Sửa warning SDK, cập nhật model, cải thiện kiểm soát lỗi |
+| **Local Provider Fix** | `src/core/local_provider.py` | Khắc phục `n_ctx` memory issue gây lỗi khi tạo context |
+| **Metrics Enhancement** | `src/telemetry/metrics.py` | Bổ sung giá model cho `gemini-2.0-flash` |
+| **Unicode Fix** | `src/main.py` | Khắc phục lỗi mã hóa tiếng Việt trong console Windows |
+| **Test Scenarios** | `test_scenarios.py` | Kịch bản tự động kiểm tra hiệu năng Chatbot vs Agent |
 
 ### Code Highlights
 
@@ -199,12 +199,12 @@ Observation là **điểm khác biệt then chốt** giữa Agent và Chatbot. K
 {"cinema_name": "CGV Vincom Royal City", "distance_km": 0.0, "movie_title": "Dune: Part Two", "score": 100.0}
 ```
 
-Agent sử dụng observation để:
-- **Grounding** (neo thực tế): Dùng đúng tên rạp, giá, ghế từ hệ thống thật
-- **Decision making**: Chọn suất chiếu có score cao nhất
-- **Error correction**: Nếu tool trả error → agent biết thử lại hoặc điều chỉnh
+Agent tận dụng observation để:
+- **Grounding** (neo thực tế): Dựa vào dữ liệu rạp, giá, ghế do tool trả về
+- **Decision making**: Ưu tiên suất chiếu phù hợp nhất với điều kiện người dùng
+- **Error correction**: Khi tool trả về lỗi, agent tự điều chỉnh hướng gọi lại
 
-Chatbot không có observation → tất cả output đều dựa trên training data → dễ hallucinate.
+Chatbot thiếu observation nên kết quả thường chỉ dựa trên kiến thức huấn luyện, dễ gặp hallucination.
 
 ---
 
@@ -227,5 +227,5 @@ Chatbot không có observation → tất cả output đều dựa trên training
 
 ---
 
-> **Submitted by**: Dương Văn Hiệp (2A202600052)
+> **Submitted by**: Nguyễn Minh Quân (2A202600181)
 > **Date**: 2026-04-06

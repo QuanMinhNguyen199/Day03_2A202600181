@@ -8,8 +8,6 @@ load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 try:
-    # Sử dụng model gpt-4o-mini (bản mới và rẻ nhất hiện nay)
-    # Lưu ý: Không có model gpt-5.4-mini đâu nhé!
     response = client.chat.completions.create(
         model="gpt-5.4-mini", 
         messages=[
