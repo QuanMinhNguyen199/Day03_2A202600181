@@ -12,53 +12,56 @@
 
 | Module | File | Mô tả |
 |:---|:---|:---|
-| **LLM Provider Selection** | `src/main.py` | Thêm tùy chọn provider khi chạy và menu tương tác cho OpenAI/Gemini/Local |
-| **OpenAI / Github Models** | `src/core/openai_provider.py` | Kết nối `gpt-4o` qua GitHub Models bằng Personal Access Token |
-| **Agent v2 (Improved)** | `src/agent/agent.py` | Nâng cấp prompt hệ thống, thêm ví dụ mẫu, xử lý lỗi parse lặp lại |
-| **Gemini Provider Fix** | `src/core/gemini_provider.py` | Sửa warning SDK, cập nhật model, cải thiện kiểm soát lỗi |
-| **Local Provider Fix** | `src/core/local_provider.py` | Khắc phục `n_ctx` memory issue gây lỗi khi tạo context |
-| **Metrics Enhancement** | `src/telemetry/metrics.py` | Bổ sung giá model cho `gemini-2.0-flash` |
-| **Unicode Fix** | `src/main.py` | Khắc phục lỗi mã hóa tiếng Việt trong console Windows |
-| **Test Scenarios** | `test_scenarios.py` | Kịch bản tự động kiểm tra hiệu năng Chatbot vs Agent |
+| **Provider chooser** | `src/main.py` | Thêm menu chạy và lựa chọn giữa Gemini, OpenAI/GitHub và local model |
+| **OpenAI / GitHub integration** | `src/core/openai_provider.py` | Triển khai kết nối `gpt-4o` qua GitHub Models với token cá nhân |
+| **ReAct agent upgrade** | `src/agent/agent.py` | Cải thiện prompt, bổ sung ví dụ mẫu, và xử lý parse error nhiều lần |
+| **Gemini compatibility** | `src/core/gemini_provider.py` | Cập nhật model API, giảm cảnh báo SDK và tăng cường bắt lỗi |
+| **Local model stability** | `src/core/local_provider.py` | Điều chỉnh `n_ctx` để tránh lỗi tạo context với Phi-3 |
+| **Telemetry update** | `src/telemetry/metrics.py` | Thêm cấu hình giá cho model `gemini-2.0-flash` |
+| **Windows UTF-8 support** | `src/main.py` | Thiết lập lại encoding stdout/stderr để in tiếng Việt ổn định |
+| **Automated tests** | `test_scenarios.py` | Xây dựng kịch bản kiểm thử hiệu quả giữa Chatbot và Agent |
 
 ### Code Highlights
 
-**1. Provider Selection Interactive (main.py)**
+**1. Interactive provider menu (main.py)**
 ```python
 def select_provider_interactive():
-    print("\n=== Chọn LLM Provider ===")
-    print("  1) Google Gemini (gemini-2.0-flash) — nhanh, qua API")
-    print("  2) Local Phi-3 (CPU)                — chậm, offline")
-    print("  3) OpenAI / GitHub Models (gpt-4o)  — qua Azure OpenAI")
+    print("\n=== Lựa chọn LLM Provider ===")
+    print("  1) Google Gemini (gemini-2.0-flash) — nhanh, API")
+    print("  2) Local Phi-3 (CPU)                — offline, chậm hơn")
+    print("  3) OpenAI / GitHub Models (gpt-4o)  — qua GitHub Models")
     while True:
-        choice = input("\nNhập 1, 2 hoặc 3 (mặc định=3): ").strip()
-        if choice == "1": return "google", "gemini-2.0-flash"
-        if choice == "2": return "local", "Phi-3-mini-4k-instruct"
-        if choice in {"", "3"}: return "openai", "gpt-4o"
+        choice = input("\nChọn 1, 2 hoặc 3 (mặc định=3): ").strip()
+        if choice == "1":
+            return "google", "gemini-2.0-flash"
+        if choice == "2":
+            return "local", "Phi-3-mini-4k-instruct"
+        if choice in {"", "3"}:
+            return "openai", "gpt-4o"
 ```
 
-**2. Agent v2 — Few-shot examples trong system prompt (agent.py)**
+**2. Prompt examples for format guidance (agent.py)**
 ```python
-# Thêm ví dụ cụ thể để LLM hiểu đúng format
+# Cung cấp ví dụ rõ ràng để LLM sinh output theo định dạng mong muốn
 """
-Ví dụ 1 (Tìm suất chiếu):
-Thought: Người dùng muốn xem phim hành động gần Royal City, tôi cần tìm suất chiếu.
+Ví dụ 1: Tìm suất chiếu
+Thought: Người dùng muốn một suất chiếu hành động gần Royal City.
 Action: recommend_showtimes({"location":"Royal City","genre":"action","seats":2,...})
 
-Ví dụ 2 (Giữ ghế):
-Thought: Đã có suất chiếu, tôi sẽ giữ ghế.
+Ví dụ 2: Giữ ghế tốt nhất
+Thought: Đã có suất chiếu phù hợp, tiếp theo giữ ghế.
 Action: hold_best_seats({"cinema_name":"CGV Vincom Royal City",...})
 """
 ```
 
-**3. Consecutive Parse Error Bailout (agent.py)**
+**3. Parse error backoff logic (agent.py)**
 ```python
 consecutive_parse_errors += 1
 if consecutive_parse_errors >= 3:
     logger.log_event("PARSE_ERROR_BAILOUT", {...})
     if len(content) > 20:
-        return content  # Salvage useful content
-    return "Xin lỗi, mình gặp lỗi khi xử lý."
+        return content  # Giữ lại nội dung có ích nếu có
+    return "Xin lỗi, mình gặp vấn đề khi xử lý."
 ```
 
 ### Documentation — Interaction với ReAct Loop
