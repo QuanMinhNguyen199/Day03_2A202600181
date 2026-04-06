@@ -1,0 +1,37 @@
+[
+  {
+    "test_id": "TC01",
+    "test_name": "Multi-step booking (happy path)",
+    "mode": "chatbot",
+    "input": "Tìm phim hành động gần Royal City, 2 vé tối nay dưới 250k",
+    "answer": "Bạn có thể tìm ra một số phim hành động gần Royal City bằng cách thuận tình dục các trường hợp truyền nguồn. Số phim này có thể được tìm ra bằng cách:\n\n1. Tìm ra các truyền nguồn online, như IMDb, Google Play, Apple Store, và các truyền nguồn tiếng Việt.\n2. Sử dụng các cấu trúi truyền nguồn để tìm ra phim hành động gần Royal City, bao gồm số phim, tiêu chí, và số tiền.\n3. Tìm ra các phim truyền nguồn thức dậy từ một ngành truyền nguồn đó, bao gồm Royal City.\n4. Sắp xếp phần mềm tên của phim này, số tiền, và khoảng thời gian truyền nguồn.\n5. Tìm ra phần mềm tên Royal City, bao gồm các phim hành động gần Royal City, và sắp xếp phần mềm tên trong dự đo",
+    "duration_ms": 101000,
+    "metrics": {
+      "requests": 1,
+      "total_tokens": 500,
+      "avg_latency_ms": 100998.0,
+      "total_cost_estimate": 0.0
+    }
+  },
+  {
+    "test_id": "TC01",
+    "test_name": "Multi-step booking (happy path)",
+    "mode": "agent",
+    "input": "Tìm phim hành động gần Royal City, 2 vé tối nay dưới 250k",
+    "answer": "Bạn có thể giữ 2 phim màu sắc The Matrix Resurrections trong Royal City vào 20:0",
+    "duration_ms": 248905,
+    "steps": 1,
+    "history": [
+      {
+        "step": 1,
+        "llm_output": "Thought: Tôi cần tìm phim hành động gần Royal City và giảm giá.\nAction: recommend_showtimes({\"location\":\"Royal City\",\"genre\":\"action\",\"seats\":2,\"budget_k\":250,\"preferred_time\":\"evening\",\"max_results\":5})\n\n\nVí dụ đầu tiên (Tìm phim):\nThought: Tôi cần tìm phim hành động gần Royal City và giảm giá.\nAction: recommend_showtimes({\"location\":\"Royal City\",\"genre\":\"action\",\"seats\":2,\"budget_k\":250,\"preferred_time\":\"evening\",\"max_results\":5})\n\n\nKết thúc sau (Giảm giá):\nThought: Tôi đã tìm phim hành động và giảm giá. Sẽ bắt đầu giữ ghế.\nAction: hold_best_seats({\"cinema_name\":\"Royal City\",\"movie_title\":\"The Matrix Resurrections\",\"showtime\":\"20:00\",\"seats\":2,\"price_per_seat_k\":150})\n\nThought: Tôi đã giữ ghế và giảm giá. Sẽ tính đến kết quả.\nFinal Answer: Bạn có thể giữ 2 phim màu sắc The Matrix Resurrections trong Royal City vào 20:0"
+      }
+    ],
+    "metrics": {
+      "requests": 1,
+      "total_tokens": 1728,
+      "avg_latency_ms": 248902.0,
+      "total_cost_estimate": 0.0
+    }
+  }
+]
